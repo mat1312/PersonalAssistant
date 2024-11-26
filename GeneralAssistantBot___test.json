@@ -1,0 +1,617 @@
+{
+  "name": "GeneralAssistantBot - test",
+  "nodes": [
+    {
+      "parameters": {
+        "model": "gpt-4o-2024-08-06",
+        "options": {}
+      },
+      "id": "0f44e3c0-4fd5-4c9e-99ea-db1453237d84",
+      "name": "OpenAI Chat Model",
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1,
+      "position": [
+        1460,
+        440
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "4iBpLmTFmbRzGrvE",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $('Telegram Trigger').item.json.message.chat.id }}",
+        "contextWindowLength": 20
+      },
+      "id": "4696191a-5203-43ad-a472-f077d1ba094c",
+      "name": "Window Buffer Memory",
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.2,
+      "position": [
+        1580,
+        460
+      ]
+    },
+    {
+      "parameters": {
+        "name": "database",
+        "description": "Call this tool to provide relevant and useful answers to user's questions"
+      },
+      "id": "66c1ea4e-d3cc-4e55-b4b4-32c4ca3a6636",
+      "name": "Vector Store Tool",
+      "type": "@n8n/n8n-nodes-langchain.toolVectorStore",
+      "typeVersion": 1,
+      "position": [
+        1700,
+        460
+      ]
+    },
+    {
+      "parameters": {
+        "model": "text-embedding-3-small",
+        "options": {}
+      },
+      "id": "eea66ba2-fbd9-4f9d-a22c-12f1e6d322a8",
+      "name": "Embeddings OpenAI",
+      "type": "@n8n/n8n-nodes-langchain.embeddingsOpenAi",
+      "typeVersion": 1,
+      "position": [
+        1680,
+        800
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "4iBpLmTFmbRzGrvE",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": "gpt-4o-2024-08-06",
+        "options": {}
+      },
+      "id": "6cffaff2-1dc1-465d-9a75-2a978d37b460",
+      "name": "OpenAI Chat Model1",
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1,
+      "position": [
+        1940,
+        660
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "4iBpLmTFmbRzGrvE",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "updates": [
+          "message"
+        ],
+        "additionalFields": {
+          "download": true
+        }
+      },
+      "id": "1a1d96d0-9bdb-46b1-af4a-ca1867e306f8",
+      "name": "Telegram Trigger",
+      "type": "n8n-nodes-base.telegramTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        580,
+        640
+      ],
+      "webhookId": "e7b238e7-baeb-468d-be49-a4bfb8509cfb",
+      "credentials": {
+        "telegramApi": {
+          "id": "fGMzqFOsdWMjIAB1",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram Trigger').item.json.message.chat.id }}",
+        "text": "={{ $json.output }}",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "id": "a0fc37ed-4182-4a57-b3ed-1d450aa9492f",
+      "name": "Telegram",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        2860,
+        120
+      ],
+      "credentials": {
+        "telegramApi": {
+          "id": "fGMzqFOsdWMjIAB1",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "file",
+        "fileId": "={{ $json.message.voice.file_id }}"
+      },
+      "id": "af85a83c-9357-40a5-bf11-285c37fa7c4c",
+      "name": "Telegram1",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        960,
+        220
+      ],
+      "credentials": {
+        "telegramApi": {
+          "id": "fGMzqFOsdWMjIAB1",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "c1aeb564-c24e-46b0-8c5b-95e8015ceaaf",
+              "leftValue": "={{ $json.message.voice }}",
+              "rightValue": "",
+              "operator": {
+                "type": "object",
+                "operation": "exists",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "a852c549-30c8-43a7-b7a3-12665313f1dc",
+      "name": "If",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.1,
+      "position": [
+        800,
+        440
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "audio",
+        "operation": "transcribe",
+        "options": {}
+      },
+      "id": "315abdb2-1ccd-4436-97a5-3041e43db6e5",
+      "name": "OpenAI",
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.4,
+      "position": [
+        1180,
+        120
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "4iBpLmTFmbRzGrvE",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "id": "4c88e1f7-f616-407f-9048-9ad289f612f0",
+      "name": "Calculator",
+      "type": "@n8n/n8n-nodes-langchain.toolCalculator",
+      "typeVersion": 1,
+      "position": [
+        2120,
+        500
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "87789ffa-93da-4313-b96b-55087a356594",
+      "name": "Wikipedia",
+      "type": "@n8n/n8n-nodes-langchain.toolWikipedia",
+      "typeVersion": 1,
+      "position": [
+        2240,
+        500
+      ]
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "09ec49fd-d077-45d1-aab3-c97a52f7e845",
+      "name": "SerpAPI",
+      "type": "@n8n/n8n-nodes-langchain.toolSerpApi",
+      "typeVersion": 1,
+      "position": [
+        2020,
+        500
+      ],
+      "credentials": {
+        "serpApi": {
+          "id": "bDAj7vOrdRrtDIlY",
+          "name": "SerpAPI account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "6fee0445-7ecd-4fab-ab40-01c6c818ec61",
+      "name": "When chat message received",
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        740,
+        -120
+      ],
+      "webhookId": "c8015e18-9a49-45e9-94a3-7b6630391cfa"
+    },
+    {
+      "parameters": {
+        "resource": "image",
+        "options": {}
+      },
+      "id": "77e1124e-f6ec-438d-b351-b9a85d354347",
+      "name": "OpenAI1",
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.4,
+      "position": [
+        880,
+        660
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "4iBpLmTFmbRzGrvE",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "name": "image_generator",
+        "description": "call this tool when user ask for an image generation",
+        "workflowId": "Ub6Dda3WITGDkSdG",
+        "fields": {
+          "values": [
+            {
+              "name": "content",
+              "stringValue": "={{ $json.message.text }} {{ $json.text }}{{ $json.chatInput }}"
+            },
+            {
+              "name": "chat_id",
+              "stringValue": "={{ $('Telegram Trigger').item.json.message.chat.id }}"
+            }
+          ]
+        }
+      },
+      "id": "da94a69a-321f-4023-9ff0-d805290c9fb4",
+      "name": "Image Generator",
+      "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
+      "typeVersion": 1.1,
+      "position": [
+        2640,
+        500
+      ]
+    },
+    {
+      "parameters": {
+        "name": "perplexity",
+        "description": "call this tool when the user asks to search on internet",
+        "workflowId": "D7XkribNJhiIslHZ",
+        "fields": {
+          "values": [
+            {
+              "name": "content",
+              "stringValue": "={{ $json.message.text }} {{ $json.text }}{{ $json.chatInput }}"
+            }
+          ]
+        }
+      },
+      "id": "d09c0bc8-fd63-4368-839f-374671277797",
+      "name": "Perplexity",
+      "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
+      "typeVersion": 1.1,
+      "position": [
+        2500,
+        500
+      ]
+    },
+    {
+      "parameters": {
+        "name": "Calendar_Tool",
+        "description": "call this tool when users ask you to create an event or delete one",
+        "workflowId": "IxD8KNKcqhA2Grjn",
+        "fields": {
+          "values": [
+            {
+              "name": "content",
+              "stringValue": "={{ $json.message.text }} {{ $json.text }}{{ $json.chatInput }}"
+            }
+          ]
+        }
+      },
+      "id": "64f598e2-935d-4c23-b11a-68f85b3ef40d",
+      "name": "Calendar",
+      "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
+      "typeVersion": 1.1,
+      "position": [
+        2360,
+        500
+      ]
+    },
+    {
+      "parameters": {
+        "pineconeIndex": {
+          "__rl": true,
+          "value": "test1",
+          "mode": "list",
+          "cachedResultName": "test1"
+        },
+        "options": {
+          "pineconeNamespace": "all data"
+        }
+      },
+      "id": "b64ee847-4792-4953-a091-a08caa9ce95a",
+      "name": "Pinecone Vector Store",
+      "type": "@n8n/n8n-nodes-langchain.vectorStorePinecone",
+      "typeVersion": 1,
+      "position": [
+        1700,
+        660
+      ],
+      "credentials": {
+        "pineconeApi": {
+          "id": "vULRkJUoVr8gJ2QN",
+          "name": "PineconeApi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "agent": "conversationalAgent",
+        "promptType": "define",
+        "text": "={{ $json.message.text }} {{ $json.text }}{{ $json.chatInput }}",
+        "options": {
+          "systemMessage": "Assistant is a large language model trained by OpenAI.\n\nAssistant is designed to be able to assist with a wide range of tasks, from answering simple questions to providing in-depth explanations and discussions on a wide range of topics. As a language model, Assistant is able to generate human-like text based on the input it receives, allowing it to engage in natural-sounding conversations and provide responses that are coherent and relevant to the topic at hand.\n\nAssistant is constantly learning and improving, and its capabilities are constantly evolving. It is able to process and understand large amounts of text, and can use this knowledge to provide accurate and informative responses to a wide range of questions. Additionally, Assistant is able to generate its own text based on the input it receives, allowing it to engage in discussions and provide explanations and descriptions on a wide range of topics.\n\nOverall, Assistant is a powerful system that can help with a wide range of tasks and provide valuable insights and information on a wide range of topics. Whether you need help with a specific question or just want to have a conversation about a particular topic, Assistant is here to assist. You are Italian and you're talking with italians in italian"
+        }
+      },
+      "id": "2ee11238-1a50-4f63-a00e-7724b8c9b93a",
+      "name": "AI Agent",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.6,
+      "position": [
+        1660,
+        120
+      ]
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Vector Store Tool": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Embeddings OpenAI": {
+      "ai_embedding": [
+        [
+          {
+            "node": "Pinecone Vector Store",
+            "type": "ai_embedding",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Vector Store Tool",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Telegram Trigger": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Telegram1": {
+      "main": [
+        [
+          {
+            "node": "OpenAI",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Telegram1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Calculator": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wikipedia": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When chat message received": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Window Buffer Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Image Generator": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Perplexity": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Calendar": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Pinecone Vector Store": {
+      "ai_vectorStore": [
+        [
+          {
+            "node": "Vector Store Tool",
+            "type": "ai_vectorStore",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Telegram",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "1208632a-d9ed-48ee-90b4-10fc16e7a64d",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "32779d8a155a8feeb722d66342e0088e23c62c08f3a88037fb44055175fbb730"
+  },
+  "id": "FyQ04mdelRnHHM0i",
+  "tags": []
+}
