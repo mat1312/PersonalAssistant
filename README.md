@@ -42,10 +42,9 @@ Questo progetto utilizza [n8n](https://n8n.io/) per creare un bot flessibile e p
    Installa n8n localmente o su un server.
 2. Importa il file .json nel tuo workspace n8n.
 3. Configura le credenziali richieste:
-4. Configura le credenziali richieste:
-OpenAI API key
-Telegram API key
-5.Avvia il workflow e testa il bot su Telegram.
+-OpenAI API key
+-Telegram API key
+4. Avvia il workflow e testa il bot su Telegram.
 
 ## Personalizzazioni
 Puoi adattare i nodi del workflow alle tue necessità.
