@@ -39,3 +39,14 @@ Questo progetto utilizza [n8n](https://n8n.io/) per creare un bot flessibile e p
 1. Clona questa repository:
    ```bash
    git clone https://github.com/mat1312/GeneralAssistantBot-Test.git
+   Installa n8n localmente o su un server.
+2. Importa il file .json nel tuo workspace n8n.
+3. Configura le credenziali richieste:
+4. Configura le credenziali richieste:
+OpenAI API key
+Telegram API key
+5.Avvia il workflow e testa il bot su Telegram.
+
+## Personalizzazioni
+Puoi adattare i nodi del workflow alle tue necessità.
+Integra altri strumenti o modifica le risposte generate per soddisfare il tuo caso d'uso.
