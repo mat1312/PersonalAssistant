@@ -1,0 +1,1518 @@
+{
+  "name": "Personal Assistant",
+  "nodes": [
+    {
+      "parameters": {
+        "model": "gpt-4o-2024-08-06",
+        "options": {}
+      },
+      "id": "f8849f49-5464-420c-b9b5-c89fb05ad052",
+      "name": "OpenAI Chat Model",
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1,
+      "position": [
+        1600,
+        720
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "zPo8ciHZnxl5C1Hr",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $('Telegram Trigger').item.json.message.chat.id }}",
+        "contextWindowLength": 20
+      },
+      "id": "aeab1dd5-0193-4044-aba8-43b5daa37d9e",
+      "name": "Window Buffer Memory",
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.2,
+      "position": [
+        1720,
+        720
+      ]
+    },
+    {
+      "parameters": {
+        "name": "database",
+        "description": "Call this tool to provide relevant and useful answers to user's questions"
+      },
+      "id": "8276095a-b0ae-4a86-bcca-4188d7354107",
+      "name": "Vector Store Tool",
+      "type": "@n8n/n8n-nodes-langchain.toolVectorStore",
+      "typeVersion": 1,
+      "position": [
+        1840,
+        660
+      ]
+    },
+    {
+      "parameters": {
+        "model": "text-embedding-3-small",
+        "options": {}
+      },
+      "id": "b76b1e49-13b1-484b-ac7c-bfd93fb1b792",
+      "name": "Embeddings OpenAI",
+      "type": "@n8n/n8n-nodes-langchain.embeddingsOpenAi",
+      "typeVersion": 1,
+      "position": [
+        1920,
+        960
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "zPo8ciHZnxl5C1Hr",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": "gpt-4o-2024-08-06",
+        "options": {}
+      },
+      "id": "be3b0ff7-c5c0-4eff-b88b-774426548349",
+      "name": "OpenAI Chat Model1",
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1,
+      "position": [
+        2120,
+        820
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "zPo8ciHZnxl5C1Hr",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "updates": [
+          "message"
+        ],
+        "additionalFields": {
+          "download": true
+        }
+      },
+      "id": "3ea25a1f-160f-4c86-8241-b1f5ffefd047",
+      "name": "Telegram Trigger",
+      "type": "n8n-nodes-base.telegramTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        1060,
+        600
+      ],
+      "webhookId": "83b2627b-93c0-4f63-b4ba-a9fa19f7c8fe"
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram Trigger').item.json.message.chat.id }}",
+        "text": "={{ $json.output }}",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "id": "c0bd697f-1fe7-482b-ba68-5eb7dbbb0ad9",
+      "name": "Telegram",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        2220,
+        380
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "file",
+        "fileId": "={{ $json.message.voice.file_id }}"
+      },
+      "id": "1cea996b-ae6c-443e-9068-78f9de1c5a0e",
+      "name": "Telegram1",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        1360,
+        400
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "c1aeb564-c24e-46b0-8c5b-95e8015ceaaf",
+              "leftValue": "={{ $json.message.voice }}",
+              "rightValue": "",
+              "operator": {
+                "type": "object",
+                "operation": "exists",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "2190d5dc-a8b6-4ce4-b471-fab8a7de3bcb",
+      "name": "If",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.1,
+      "position": [
+        1300,
+        620
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "audio",
+        "operation": "transcribe",
+        "options": {}
+      },
+      "id": "56e17111-bff1-4c74-9e29-15383f0d4c20",
+      "name": "OpenAI",
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.4,
+      "position": [
+        1520,
+        380
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "zPo8ciHZnxl5C1Hr",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "id": "fbdfa229-90a3-4300-a92e-5b40304d0bc7",
+      "name": "Calculator",
+      "type": "@n8n/n8n-nodes-langchain.toolCalculator",
+      "typeVersion": 1,
+      "position": [
+        2220,
+        740
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "a9dd43f5-edd1-4ebb-b528-edff72784ccf",
+      "name": "Wikipedia",
+      "type": "@n8n/n8n-nodes-langchain.toolWikipedia",
+      "typeVersion": 1,
+      "position": [
+        2340,
+        740
+      ]
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "fe445690-09d1-4458-82ec-1c6d96c728ea",
+      "name": "When chat message received",
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        1600,
+        220
+      ],
+      "webhookId": "762c6cae-d43f-467b-94e2-b8aedb9fecbc"
+    },
+    {
+      "parameters": {
+        "name": "image_generator",
+        "description": "call this tool when user ask for an image generation",
+        "workflowId": "Ub6Dda3WITGDkSdG",
+        "fields": {
+          "values": [
+            {
+              "name": "content",
+              "stringValue": "={{ $json.message.text }} {{ $json.text }}{{ $json.chatInput }}"
+            },
+            {
+              "name": "chat_id",
+              "stringValue": "={{ $('Telegram Trigger').item.json.message.chat.id }}"
+            }
+          ]
+        }
+      },
+      "id": "afdc35fc-1e06-4890-a3af-40f8f9db9a17",
+      "name": "Image Generator",
+      "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
+      "typeVersion": 1.1,
+      "position": [
+        2560,
+        740
+      ]
+    },
+    {
+      "parameters": {
+        "name": "perplexity",
+        "description": "call this tool when the user asks to search on internet",
+        "workflowId": "D7XkribNJhiIslHZ",
+        "fields": {
+          "values": [
+            {
+              "name": "content",
+              "stringValue": "={{ $json.message.text }} {{ $json.text }}{{ $json.chatInput }}"
+            }
+          ]
+        }
+      },
+      "id": "58a1d36a-d2ff-4561-b646-3f5064bf0556",
+      "name": "Perplexity",
+      "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
+      "typeVersion": 1.1,
+      "position": [
+        2680,
+        740
+      ]
+    },
+    {
+      "parameters": {
+        "name": "Calendar_Tool",
+        "description": "call this tool when users ask you to create an event or delete one",
+        "workflowId": "IxD8KNKcqhA2Grjn",
+        "fields": {
+          "values": [
+            {
+              "name": "content",
+              "stringValue": "={{ $json.message.text }} {{ $json.text }}{{ $json.chatInput }}"
+            }
+          ]
+        }
+      },
+      "id": "3bf340e9-0cf3-4aad-9153-eaf10a1843aa",
+      "name": "Calendar",
+      "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
+      "typeVersion": 1.1,
+      "position": [
+        2440,
+        740
+      ]
+    },
+    {
+      "parameters": {
+        "pineconeIndex": {
+          "__rl": true,
+          "value": "test1",
+          "mode": "list",
+          "cachedResultName": "test1"
+        },
+        "options": {
+          "pineconeNamespace": "all data"
+        }
+      },
+      "id": "0bcf0396-a42e-4674-bc9b-e54905508646",
+      "name": "Pinecone Vector Store",
+      "type": "@n8n/n8n-nodes-langchain.vectorStorePinecone",
+      "typeVersion": 1,
+      "position": [
+        1800,
+        820
+      ]
+    },
+    {
+      "parameters": {
+        "agent": "conversationalAgent",
+        "promptType": "define",
+        "text": "={{ $json.message.text }} {{ $json.text }}{{ $json.chatInput }}",
+        "options": {
+          "systemMessage": "Assistant is a large language model trained by OpenAI.\n\nAssistant is designed to be able to assist with a wide range of tasks, from answering simple questions to providing in-depth explanations and discussions on a wide range of topics. As a language model, Assistant is able to generate human-like text based on the input it receives, allowing it to engage in natural-sounding conversations and provide responses that are coherent and relevant to the topic at hand.\n\nAssistant is constantly learning and improving, and its capabilities are constantly evolving. It is able to process and understand large amounts of text, and can use this knowledge to provide accurate and informative responses to a wide range of questions. Additionally, Assistant is able to generate its own text based on the input it receives, allowing it to engage in discussions and provide explanations and descriptions on a wide range of topics.\n\nOverall, Assistant is a powerful system that can help with a wide range of tasks and provide valuable insights and information on a wide range of topics. Whether you need help with a specific question or just want to have a conversation about a particular topic, Assistant is here to assist. You are Italian and you're talking with italians in italian"
+        }
+      },
+      "id": "970f3c62-d2f0-4045-94d0-6ead974decb3",
+      "name": "AI Agent",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.6,
+      "position": [
+        1800,
+        380
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "04b0999a-9d3f-42db-9727-3fdcf66967b8",
+              "name": "response",
+              "value": "success",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "cb1b6625-3caa-4e94-a126-4961e66f0b7f",
+      "name": "Edit Fields",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        2380,
+        1040
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "177bff10-af5f-42ac-aed9-e2929225f627",
+      "name": "Execute Workflow Trigger",
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1,
+      "position": [
+        1360,
+        1240
+      ]
+    },
+    {
+      "parameters": {
+        "fieldsToAggregate": {
+          "fieldToAggregate": [
+            {
+              "fieldToAggregate": "id"
+            },
+            {
+              "fieldToAggregate": "summary"
+            },
+            {}
+          ]
+        },
+        "options": {}
+      },
+      "id": "f79d884c-8ba6-4431-9fd0-7ea83ba9fdcf",
+      "name": "Aggregate",
+      "type": "n8n-nodes-base.aggregate",
+      "typeVersion": 1,
+      "position": [
+        2320,
+        1220
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "04b0999a-9d3f-42db-9727-3fdcf66967b8",
+              "name": "response",
+              "value": "success",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "74e9a337-d108-46ac-939b-54362939eb7e",
+      "name": "Edit Fields1",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        3020,
+        1360
+      ]
+    },
+    {
+      "parameters": {
+        "name": "database",
+        "description": "contacts database"
+      },
+      "id": "baf31d31-2a03-4b2f-8958-0190c3c17fe9",
+      "name": "Contacts Database",
+      "type": "@n8n/n8n-nodes-langchain.toolVectorStore",
+      "typeVersion": 1,
+      "position": [
+        1540,
+        1360
+      ]
+    },
+    {
+      "parameters": {
+        "calendar": {
+          "__rl": true,
+          "value": "matteoferrillo@gmail.com",
+          "mode": "list",
+          "cachedResultName": "matteoferrillo@gmail.com"
+        },
+        "start": "={{ $json.message.content.start.dateTime }}",
+        "end": "={{ $json.message.content.end.dateTime }}",
+        "additionalFields": {
+          "color": "11",
+          "description": "={{ $json.message.content.summary }}",
+          "summary": "={{ $json.message.content.summary }}"
+        }
+      },
+      "id": "191d70a3-6e44-49d3-a4fd-f86b214b4336",
+      "name": "Create Event",
+      "type": "n8n-nodes-base.googleCalendar",
+      "typeVersion": 1.1,
+      "position": [
+        2160,
+        1060
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "delete",
+        "calendar": {
+          "__rl": true,
+          "value": "matteoferrillo@gmail.com",
+          "mode": "list",
+          "cachedResultName": "matteoferrillo@gmail.com"
+        },
+        "eventId": "={{ $json.message.content }}",
+        "options": {}
+      },
+      "id": "63dbf77c-1ff3-4c29-aa8b-3e080fee5a31",
+      "name": "Delete Event1",
+      "type": "n8n-nodes-base.googleCalendar",
+      "typeVersion": 1.1,
+      "position": [
+        2840,
+        1220
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "getAll",
+        "calendar": {
+          "__rl": true,
+          "value": "matteoferrillo@gmail.com",
+          "mode": "list",
+          "cachedResultName": "matteoferrillo@gmail.com"
+        },
+        "options": {
+          "timeMin": "={{ $json.message.content.after }}",
+          "timeMax": "={{ $json.message.content.before }}"
+        }
+      },
+      "id": "f090e189-8198-4b7a-a5dd-c894055e1556",
+      "name": "Get IDs",
+      "type": "n8n-nodes-base.googleCalendar",
+      "typeVersion": 1.1,
+      "position": [
+        2160,
+        1220
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "getAll",
+        "calendar": {
+          "__rl": true,
+          "value": "matteoferrillo@gmail.com",
+          "mode": "list",
+          "cachedResultName": "matteoferrillo@gmail.com"
+        },
+        "options": {
+          "timeMin": "={{ $json.message.content.after }}",
+          "timeMax": "={{ $json.message.content.before }}"
+        }
+      },
+      "id": "c834f7ba-4f97-4d3f-91af-70c0287c6544",
+      "name": "Get IDs2",
+      "type": "n8n-nodes-base.googleCalendar",
+      "typeVersion": 1.1,
+      "position": [
+        2160,
+        1380
+      ]
+    },
+    {
+      "parameters": {
+        "fieldsToAggregate": {
+          "fieldToAggregate": [
+            {
+              "fieldToAggregate": "id"
+            },
+            {
+              "fieldToAggregate": "summary"
+            },
+            {}
+          ]
+        },
+        "options": {}
+      },
+      "id": "586b3827-a5f4-417f-b93e-36bb53dc605b",
+      "name": "Aggregate1",
+      "type": "n8n-nodes-base.aggregate",
+      "typeVersion": 1,
+      "position": [
+        2320,
+        1400
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "calendar": {
+          "__rl": true,
+          "value": "matteoferrillo@gmail.com",
+          "mode": "list",
+          "cachedResultName": "matteoferrillo@gmail.com"
+        },
+        "updateFields": {
+          "end": "",
+          "start": ""
+        }
+      },
+      "id": "433329d3-b63b-47c5-8247-05dc8dfd4348",
+      "name": "Google Calendar",
+      "type": "n8n-nodes-base.googleCalendar",
+      "typeVersion": 1.1,
+      "position": [
+        2820,
+        1440
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "04b0999a-9d3f-42db-9727-3fdcf66967b8",
+              "name": "response",
+              "value": "success",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "70230368-128a-4ab9-92d0-2f2ecb386d33",
+      "name": "Edit Fields2",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        3020,
+        1560
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "getAll",
+        "calendar": {
+          "__rl": true,
+          "value": "matteoferrillo@gmail.com",
+          "mode": "list",
+          "cachedResultName": "matteoferrillo@gmail.com"
+        },
+        "options": {
+          "timeMin": "={{ $json.message.content.after }}",
+          "timeMax": "={{ $json.message.content.before }}",
+          "singleEvents": true
+        }
+      },
+      "id": "2316e08b-a355-4a9b-a0a1-64208a21eec0",
+      "name": "Google Calendar1",
+      "type": "n8n-nodes-base.googleCalendar",
+      "typeVersion": 1.1,
+      "position": [
+        2160,
+        1580
+      ]
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-4o-2024-08-06",
+          "mode": "list",
+          "cachedResultName": "GPT-4O-2024-08-06"
+        },
+        "messages": {
+          "values": [
+            {
+              "role": "system"
+            },
+            {
+              "content": "={{ $json.id }}{{ $json.summary }}{{ $('OpenAI4').item.json.message.content.search }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "e564fc14-67c3-4ff5-951a-6ea3c77f1e3e",
+      "name": "OpenAI2",
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.4,
+      "position": [
+        2460,
+        1420
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "zPo8ciHZnxl5C1Hr",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "04b0999a-9d3f-42db-9727-3fdcf66967b8",
+              "name": "response",
+              "value": "={{ $json.message.content }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "32ffa946-c605-4fe3-9b96-dcd604697056",
+      "name": "Edit Fields3",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        2840,
+        1660
+      ]
+    },
+    {
+      "parameters": {
+        "fieldsToAggregate": {
+          "fieldToAggregate": [
+            {
+              "fieldToAggregate": "start.dateTime",
+              "renameField": true,
+              "outputFieldName": "starttime"
+            },
+            {
+              "fieldToAggregate": "end.dateTime",
+              "renameField": true,
+              "outputFieldName": "endtime"
+            },
+            {
+              "fieldToAggregate": "summary"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "d4266907-48c7-43d4-83cb-e741d8a51431",
+      "name": "Aggregate2",
+      "type": "n8n-nodes-base.aggregate",
+      "typeVersion": 1,
+      "position": [
+        2340,
+        1600
+      ]
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-4o-2024-08-06",
+          "mode": "list",
+          "cachedResultName": "GPT-4O-2024-08-06"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "To achieve the desired output, the prompt needs to be modified to instruct the AI to provide only the final formatted message in Italian, without any intermediate explanations or additional formatting. Here is the revised prompt:\n\n---\n\n**OBJECTIVE**\n\nThe AI Agent's role is to generate a concise and visually effective message for a smartphone display that lists all calendar events within a specified timeframe in chronological order. The message should include the start time, end time, and summary of each event, formatted without the year in the date.\n\n---\n\n**CONTEXT**\n\nUser is a professional who manages multiple events and appointments. The input provided consists of event details from a calendar, including `starttime`, `endtime`, and `summary`. Each event has a corresponding start time, end time, and a descriptive summary that are related in a one-to-one mapping. The user wants to receive a well-formatted message, in fluent and conversational Italian, that can be easily read on a smartphone. Events should be displayed in chronological order.\n\n**Input Structure**:  \n- `starttime`: List of event start times in ISO 8601 format.  \n- `endtime`: List of event end times in ISO 8601 format.  \n- `summary`: List of event summaries.\n\n**Desired Output**:  \n- A single formatted message in Italian that combines the start time, end time, and summary of each event into a human-readable list, with dates formatted without the year, sorted in chronological order.\n\n---\n\n**INSTRUCTIONS**\n\n1. **Parse Input Data**:  \n   - Read the input JSON object containing arrays for `starttime`, `endtime`, and `summary`.  \n   - Ensure that each `starttime` corresponds correctly with its respective `endtime` and `summary`.  \n\n2. **Sort Events Chronologically**:  \n   - Convert the `starttime` values from ISO 8601 format to a datetime format to facilitate sorting.\n   - Sort the events based on the `starttime` in ascending order to ensure they are in chronological order.\n\n3. **Format Event Details**:  \n   - Convert each start and end time into a readable format (e.g., \"16 Febbraio, 21:00\" instead of \"2023-02-16T21:00:00+01:00\").\n   - Remove the year from the date formatting.\n   - For each event, combine the formatted `starttime`, `endtime`, and `summary` into a single line of text.\n   - Ensure the date and time are presented in a clear, readable format for Italian speakers.\n\n4. **Construct the Output Message**:  \n   - Create a list format where each event is represented by its summary, start time, and end time.\n   - Ensure the message is structured in a conversational and fluent Italian style.\n   - Use bullet points or other list indicators to make the message easily scannable on a smartphone screen.\n   \n5. **Output Requirements**:  \n   - **Output only the final formatted message** in Italian as a single string.\n   - Do not include any explanations, intermediate steps, or additional formatting. The output should be exactly in the following structure:\n\n---\n\n**OUTPUT FORMAT**\n\nThe output should be a single, cohesive message in Italian, formatted as follows:\n\n```\n📅 Ecco i tuoi eventi programmati:\n\n- **[Summary 1]**\n  🕒 Inizio: [Start Date 1], [Start Time 1]  \n  🕒 Fine: [End Date 1], [End Time 1]  \n\n- **[Summary 2]**\n  🕒 Inizio: [Start Date 2], [Start Time 2]  \n  🕒 Fine: [End Date 2], [End Time 2]  \n\n... (and so on for all events)\n\nControlla il tuo calendario per ulteriori dettagli.\n```\n\nReplace `[Summary]`, `[Start Date]`, `[Start Time]`, `[End Date]`, and `[End Time]` with the actual event details.\n\n**EXAMPLE OUTPUT**\n\n```\n📅 Ecco i tuoi eventi programmati:\n\n- **Lezione**\n  🕒 Inizio: 16 Febbraio, 21:00  \n  🕒 Fine: 16 Febbraio, 22:00  \n\n- **Lezione**\n  🕒 Inizio: 20 Aprile, 21:00  \n  🕒 Fine: 20 Aprile, 22:00  \n\nControlla il tuo calendario per ulteriori dettagli.\n```\n\nEnsure the AI outputs the message exactly in this format with the appropriate event details filled in, and no other content.",
+              "role": "system"
+            },
+            {
+              "content": "={{ $json.starttime }}//{{ $json.endtime }}//{{ $json.summary }}"
+            },
+            {}
+          ]
+        },
+        "options": {}
+      },
+      "id": "bbc9ed71-0a9a-414f-a93f-2c46f36fc423",
+      "name": "OpenAI3",
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.4,
+      "position": [
+        2500,
+        1640
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "zPo8ciHZnxl5C1Hr",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict"
+                },
+                "conditions": [
+                  {
+                    "id": "5acac4b4-ae3c-43a1-92fa-2e8447db30db",
+                    "leftValue": "={{ $json.message.content.action }}",
+                    "rightValue": "create_event",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict"
+                },
+                "conditions": [
+                  {
+                    "id": "0a1d3eb3-d982-4766-8166-bff2cc744a0e",
+                    "leftValue": "={{ $json.message.content.action }}",
+                    "rightValue": "delete_event",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict"
+                },
+                "conditions": [
+                  {
+                    "id": "dcfceebc-e767-4e15-9ce4-c051b0048bfb",
+                    "leftValue": "={{ $json.message.content.action }}",
+                    "rightValue": "update_event",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict"
+                },
+                "conditions": [
+                  {
+                    "id": "f43fd4b5-02ff-449b-88c8-0c07549192aa",
+                    "leftValue": "={{ $json.message.content.action }}",
+                    "rightValue": "get_event",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict"
+                },
+                "conditions": [
+                  {
+                    "id": "08cbff89-2320-46fb-a91a-36331c7d71f8",
+                    "leftValue": "={{ $json.message.content.action }}",
+                    "rightValue": "get_many_events",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "4189b6e4-b9f7-4ff6-8b73-ab4dc5946178",
+      "name": "Switch",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3,
+      "position": [
+        1940,
+        1180
+      ]
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-4o-2024-08-06",
+          "mode": "list",
+          "cachedResultName": "GPT-4O-2024-08-06"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "\n\n**OBJECTIVE**  \nYour role is to identify the specific Google Calendar event ID from a provided list of event IDs and summaries based on a search term. You must find the summary that matches the search term exactly or partially and return **only** the corresponding event ID. In cases where there is only one element in the `id` and `summary` arrays, always return the `id` if no exact or partial match is found.\n\n---\n\n**CONTEXT**  \nYou are an automated agent in a workflow designed to manage Google Calendar events. The input provided to you will consist of a JSON object containing two arrays:\n- `id`: A list of event IDs.\n- `summary`: A list of event summaries.\n\nThe IDs and summaries are in corresponding order, meaning the first ID in the `id` list corresponds to the first summary in the `summary` list, the second ID corresponds to the second summary, and so on.\n\nAdditionally, you will receive a search term (`{{ $('OpenAI').item.json.message.content.search }}`) provided by the user, which you will use to identify the relevant summary from the list.\n\n- **Input Format**: The input JSON object contains:\n  - `id`: An array of strings, each representing the unique ID of an event.\n  - `summary`: An array of strings, each representing the summary or description of an event.\n  - The two arrays are of the same length and correspond to each other in order.\n- **Search Term (`{{ $('OpenAI').item.json.message.content.search }}`)**: A variable containing the search criteria to identify the relevant summary from the list. This could be a keyword or phrase that may appear in any of the summaries.\n\n---\n\n**INSTRUCTIONS**  \n\n1. **Input Parsing**: Receive the input JSON object containing the lists of `id` and `summary`, along with the search term (`{{ $('OpenAI').item.json.message.content.search }}`). Ensure all data is accurately parsed for processing.\n\n2. **Event Matching**:\n   - Iterate through the `summary` list and compare each summary against the provided search term (`{{ $('OpenAI').item.json.message.content.search }}`).\n   - Determine which summary matches the search term based on a partial or complete match. Ignore case sensitivity while matching.\n\n3. **Handling Single Element Arrays**:\n   - If the `id` and `summary` arrays contain only one element each, always return the single `id` if the search term is empty or does not match the summary.\n\n4. **Select Matching ID**:\n   - Once a matching summary is identified, use the index of this match to find the corresponding event ID in the `id` list.\n\n5. **Output Generation**:\n   - **Output only the `id`** corresponding to the matched summary as plain text. Ensure the output is **only** the ID string itself, without any additional characters, such as backticks, quotation marks, or new lines.\n   - If no summary matches the search term and there is more than one element in the lists, **output should be `null`**. The output should be in plain text format without any additional formatting or data.\n\n6. **Formatting**:\n   - Ensure the output is strictly in plain text format and contains only the required event ID or `null`.\n\n---\n\n**OUTPUT REQUIREMENTS**  \n\n- The output should be a single plain text value: the `id` of the event that matches the provided search term.\n- If no summary matches the search term and there is more than one element in the lists, the output should be `null` in plain text format.\n- **Do not output any additional data, JSON objects, new lines, or text explanations**.\n- The output should not include any formatting characters like backticks, quotation marks, or new lines.\n\n---\n\n**EXAMPLES**  \n\n### Example 1:\n\n**Input**:\n```json\n{\n  \"id\": [\n    \"0o88ii6k9j49epi3b3falvrtag\",\n    \"70a2dto0e94luunimqgscjms3e\",\n    \"0qgr3br3se4tbvl3rfn4nqd81o\",\n    \"64gvmtsfuak4js039oaf9n6uo6\",\n    \"12ldk5pilt33crh1ah13uvqk19\"\n  ],\n  \"summary\": [\n    \"test1\",\n    \"test2\",\n    \"meeting con andrea\",\n    \"incontro con ruben\",\n    \"incontro matteo\"\n  ],\n  \"search\": \"incontro con ruben\"\n}\n```\n\n**AI Agent Actions**:\n1. Parse the input lists of `id` and `summary` along with the search term \"incontro con ruben\".\n2. Check each summary in the `summary` list for a match with the search term.\n3. Find that the fourth summary \"incontro con ruben\" matches the search criteria.\n4. Output the corresponding `id` as plain text without any extra formatting:\n\n**Expected Output**:\n```\n64gvmtsfuak4js039oaf9n6uo6\n```\n\n### Example 2:\n\n**Input**:\n```json\n{\n  \"id\": [\n    \"0o88ii6k9j49epi3b3falvrtag\",\n    \"70a2dto0e94luunimqgscjms3e\",\n    \"0qgr3br3se4tbvl3rfn4nqd81o\",\n    \"64gvmtsfuak4js039oaf9n6uo6\",\n    \"12ldk5pilt33crh1ah13uvqk19\"\n  ],\n  \"summary\": [\n    \"test1\",\n    \"test2\",\n    \"meeting con andrea\",\n    \"incontro con ruben\",\n    \"incontro matteo\"\n  ],\n  \"search\": \"pranzo con giulia\"\n}\n```\n\n**AI Agent Actions**:\n1. Parse the input lists of `id` and `summary` along with the search term \"pranzo con giulia\".\n2. Check each summary in the `summary` list for a match with the search term.\n3. No summary matches the search criteria.\n4. Output: \n\n**Expected Output**:\n```\nnull\n```\n\n### Example 3:\n\n**Input**:\n```json\n{\n  \"id\": [\n    \"0o88ii6k9j49epi3b3falvrtag\"\n  ],\n  \"summary\": [\n    \"incontro matteo\"\n  ],\n  \"search\": \"incontro con matteo\"\n}\n```\n\n**AI Agent Actions**:\n1. Parse the input lists of `id` and `summary` along with the search term \"incontro con matteo\".\n2. Check the single summary \"incontro matteo\" for a match with the search term.\n3. As there is only one element, output the corresponding `id` as plain text:\n\n**Expected Output**:\n```\n0o88ii6k9j49epi3b3falvrtag\n```\n\n### Example 4:\n\n**Input**:\n```json\n{\n  \"id\": [\n    \"0o88ii6k9j49epi3b3falvrtag\"\n  ],\n  \"summary\": [\n    \"incontro matteo\"\n  ],\n  \"search\": \"\"\n}\n```\n\n**AI Agent Actions**:\n1. Parse the input lists of `id` and `summary` along with an empty search term.\n2. With only one element, regardless of the empty search, output the corresponding `id` as plain text:\n\n**Expected Output**:\n```\n0o88ii6k9j49epi3b3falvrtag\n```\n\nThis modification ensures that the agent outputs **only** the ID as plain text, with no additional characters or formatting, and can handle any scenario without errors.",
+              "role": "system"
+            },
+            {
+              "content": "={{ $json.id }}// {{ $json.summary }}// {{ $('OpenAI4').item.json.message.content.search }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "427eb66d-7b4a-4f0a-a1e2-89fbf744b044",
+      "name": "OpenAI1",
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.4,
+      "position": [
+        2500,
+        1220
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "zPo8ciHZnxl5C1Hr",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "pineconeIndex": {
+          "__rl": true,
+          "value": "test1",
+          "mode": "list",
+          "cachedResultName": "test1"
+        },
+        "options": {}
+      },
+      "id": "2582d948-69a6-4d06-9a6d-a82299260892",
+      "name": "Pinecone Vector Store1",
+      "type": "@n8n/n8n-nodes-langchain.vectorStorePinecone",
+      "typeVersion": 1,
+      "position": [
+        1320,
+        1460
+      ]
+    },
+    {
+      "parameters": {
+        "model": "text-embedding-3-small",
+        "options": {}
+      },
+      "id": "77783627-e095-42f8-9f3c-286f265859c9",
+      "name": "Embeddings OpenAI1",
+      "type": "@n8n/n8n-nodes-langchain.embeddingsOpenAi",
+      "typeVersion": 1,
+      "position": [
+        1400,
+        1620
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "zPo8ciHZnxl5C1Hr",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": "gpt-4o",
+        "options": {}
+      },
+      "id": "1a9f3920-612c-48ab-a1b4-c8deda46af41",
+      "name": "OpenAI Chat Model2",
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1,
+      "position": [
+        1640,
+        1480
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "zPo8ciHZnxl5C1Hr",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-4o-2024-08-06",
+          "mode": "list",
+          "cachedResultName": "GPT-4O-2024-08-06"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "OBJECTIVE\n\nYour objective is to parse user input to identify and extract event-related information specific to calendar operations. You must generate a JSON package with the correct parameters for actions such as creating, updating, retrieving, and deleting calendar events. Your focus should be solely on event management tasks, ignoring unrelated instructions.\n\nCONTEXT\n\nYou are an AI node integrated into N8N's automation workflows, responsible for handling calendar-related tasks. Your role is to parse user requests, extract details pertinent to calendar events, and generate JSON packages formatted for calendar system operations. Other nodes handle tasks unrelated to calendar events, so your output should focus exclusively on event management.\n\nCommon Parameters:  \n- action: Specifies the type of calendar operation to be performed.  \n  - Possible values: `\"create_event\"`, `\"update_event\"`, `\"delete_event\"`, `\"get_event\"`, `\"get_many_events\"`.  \n- calendar: CalendarID, which identifies the calendar in use. Required for all actions.  \n\nAction Parameters:  \n\n- Create an Event:  \n  - summary: Event Summary (required).  \n  - description: Event Description (optional).  \n  - start: Start date and time.  \n    - dateTime: Start DateTime (required).  \n    - timeZone: Time Zone (required).  \n  - end: End date and time.  \n    - dateTime: End DateTime (required).  \n    - timeZone: Time Zone (required).  \n  - attendees: List of attendee email addresses. Always include `matteoferrillo@gmail.com`.  \n  - status: Event Status (optional).  \n  - htmlLink: HTML link to the event (optional).  \n\n- Update an Event:  \n  - after: After DateTime (required).  \n  - before: Before DateTime (required).  \n  - search: Search query (optional).  \n\n- Get an Event:  \n  - after: After DateTime (required).  \n  - before: Before DateTime (required).  \n  - search: Search query (optional).  \n\n- Get Many Events:  \n  - after: After DateTime (required).  \n  - before: Before DateTime (required).  \n  - search: Search query (optional).  \n\n- Delete an Event:  \n  - after: After DateTime (required).  \n  - before: Before DateTime (required).  \n  - search: Search query (optional).  \n\nDatabase Data:  \n- You have access to a database containing user information, such as contact details and email addresses for attendees.  \n- Ensure all necessary information is retrieved from the database to prepare accurate actions.\n\n—\n\nINSTRUCTIONS\n\n1. Identify the Calendar Action:\n   - Parse the user prompt to determine if the action involves creating, updating, retrieving, or deleting calendar events.\n   - Extract only details relevant to calendar events, ignoring unrelated tasks.\n\n2. Extract Event Information:\n   - Create Event: Extract details like event name, date, time, and attendees. Verify and append the email `admin@customaistudio.io` to attendees.\n   - Update Event: Identify existing events using search queries and time constraints. Extract details necessary for updating the event.\n   - Get Event: Use time constraints and search parameters to locate and extract details of a specific event.\n   - Get Many Events: Define a time range to fetch multiple events. Extract necessary parameters for retrieval.\n   - Delete Event: Locate the event using time and search criteria to extract details needed for deletion.\n\n3. Retrieve Information from Database:\n   - Use the database to verify attendee email addresses and other required details.\n   - Confirm specific date and time details (e.g., translate \"tomorrow\" into an actual date).\n\n4. Generate JSON Output:\n   - Construct a JSON object using the extracted parameters for each identified action.\n   - Ensure all required fields are included and correctly formatted.\n\n5. Default JSON Structure:\n\n   - Create Event\n\n     ```\n     {\n       \"action\": \"create_event\",\n       \"calendar\": \"primary\",\n       \"summary\": \"Event Summary\",\n       \"description\": \"Event Description\",\n       \"start\": {\n         \"dateTime\": \"2024-08-08T10:00:00\",\n         \"timeZone\": \"America/Chicago\"\n       },\n       \"end\": {\n         \"dateTime\": \"2024-08-08T11:00:00\",\n         \"timeZone\": \"America/Chicago\"\n       },\n       \"attendees\": [\"sarah@example.com\", \"john@example.com\", \"example@customaistudio.io\"],\n       \"status\": \"confirmed\",\n       \"htmlLink\": \"https://www.google.com/calendar/example.\"\n     }\n     ```\n\n   - Update Event\n\n     ```\n     {\n       \"action\": \"update_event\",\n       \"calendar\": \"primary\",\n       \"after\": \"2024-08-08T00:00:00\",\n       \"before\": \"2024-08-08T23:59:59\",\n       \"search\": \"Event Search Query\"\n     }\n     ```\n\n   - Get Event\n\n     ```\n     {\n       \"action\": \"get_event\",\n       \"calendar\": \"primary\",\n       \"after\": \"2024-08-08T00:00:00\",\n       \"before\": \"2024-08-08T23:59:59\",\n       \"search\": \"Event Search Query\"\n     }\n     ```\n\n   - Get Many Events\n\n     ```\n     {\n       \"action\": \"get_many_events\",\n       \"calendar\": \"primary\",\n       \"after\": \"2024-08-08T00:00:00\",\n       \"before\": \"2024-08-08T23:59:59\",\n       \"search\": \"\"\n     }\n     ```\n\n   - Delete Event\n\n     ```\n     {\n       \"action\": \"delete_event\",\n       \"calendar\": \"primary\",\n       \"after\": \"2024-08-08T00:00:00\",\n       \"before\": \"2024-08-08T23:59:59\",\n       \"search\": \"Event Search Query\"\n     }\n     ```\n\n   - Replace placeholder values with actual user inputs for each parameter.\n   - Ensure the `action` accurately reflects the calendar operation being performed.\n\n6. Validation:\n   - Verify that all required parameters are present and formatted correctly.\n   - Check for valid email addresses and ensure date-time values are correctly parsed.\n\n7. Error Handling:\n   - If any parameters are missing or incorrectly formatted, return an error message specifying the issue.\n   - Provide clear guidance on what inputs are needed or incorrectly provided for easier troubleshooting.\n\n—\n\nOUTPUT REQUIREMENTS\n\n- JSON Package: Generate a JSON package with the correct parameters for the specified calendar action.\n- Validation Errors: Provide error messages if required parameters are missing or incorrectly formatted.\n- Confirmation Message: Confirm the successful creation, update, retrieval, or deletion of calendar events.\n\n—\n\nEXAMPLES\n\nExample 1: Creating a Calendar Event\n\nUser Input:\n\"Schedule a meeting with the team for tomorrow at 10 AM. The meeting should last 1 hour. Include John and Sarah in the meeting.\"\n\nAI Agent Actions:\n1. Identify the Calendar Action:\n   - Action: `\"create_event\"`\n\n2. Extract Event Information:\n   - Summary: `\"Team Meeting\"`\n   - Start DateTime: `\"2024-08-12T10:00:00\"`\n   - End DateTime: `\"2024-08-12T11:00:00\"`\n   - Attendees: `[\"john@example.com\", \"sarah@example.com\", \"example@customaistudio.io\"]`\n\n3. Retrieve Information from Database:\n   - Verify John and Sarah’s email addresses.\n\n4. Generate JSON Output:\n\n   ```\n   {\n     \"action\": \"create_event\",\n     \"calendar\": \"primary\",\n     \"summary\": \"Team Meeting\",\n     \"description\": \"\",\n     \"start\": {\n       \"dateTime\": \"2024-08-12T10:00:00\",\n       \"timeZone\": \"America/New_York\"\n     },\n     \"end\": {\n       \"dateTime\": \"2024-08-12T11:00:00\",\n       \"timeZone\": \"America/New_York\"\n     },\n     \"attendees\": [\"john@example.com\", \"sarah@example.com\", \"example@customaistudio.io\"],\n     \"status\": \"confirmed\",\n     \"htmlLink\": \"\"\n   }\n   ```\n\n5. Validation:\n   - All required fields are present and correctly formatted.\n   - Date and time are correctly parsed.\n\n6. Output:\n   - JSON Package: As shown above.\n   - Confirmation Message: `\"Event 'Team Meeting' scheduled for 2024-08-12 at 10:00 AM.\"`\n\n---\n\nExample 2: Updating a Calendar Event\n\nUser Input:\n\"Change the meeting with John tomorrow to 2 PM instead of 10 AM.\"\n\nAI Agent Actions:\n1. Identify the Calendar Action:\n   - Action: `\"update_event\"`\n\n2. Extract Event Information:\n   - After: `\"2024-08-12T00:00:00\"`\n   - Before: `\"2024-08-12T23:59:59\"`\n   - Search: `\"Meeting with John\"`\n   - New Time: `\"2024-08-12T14:00:00\"`\n\n3. Retrieve Information from Database:\n   - Confirm that the event exists.\n\n4. Generate JSON Output:\n\n   ```\n   {\n     \"action\": \"update_event\",\n     \"calendar\": \"primary\",\n     \"after\": \"2024-08-12T00:00:00\",\n     \"before\": \"2024-08-12T23:59:59\",\n     \"search\": \"Meeting with John\"\n   }\n   ```\n\n5. Validation:\n   - All required fields are present and correctly formatted.\n\n6. Output:\n   - JSON Package: As shown above.\n   - Confirmation Message: `\"Meeting with John updated to 2 PM on 2024-08-12.\"`\n\n---\n\nExample 3: Deleting a Calendar Event\n\nUser Input:\n\"Cancel the meeting with Sarah scheduled for next week.\"\n\nAI Agent Actions:\n1. Identify the Calendar Action:\n   - Action: `\"delete_event\"`\n\n2. Extract Event Information:\n   - After: `\"2024-08-19T00:00:00\"`\n   - Before: `\"2024-08-25T23:59:59\"`\n   - Search: `\"Meeting with Sarah\"`\n\n3. Retrieve Information from Database:\n   - Confirm the event exists.\n\n4. Generate JSON Output:\n\n   ```\n   {\n     \"action\": \"delete_event\",\n     \"calendar\": \"primary\",\n     \"after\": \"2024-08-19T00:00:00\",\n     \"before\": \"2024-08-25T23:59:59\",\n     \"search\": \"Meeting with Sarah\"\n   }\n   ```\n\n5. Validation:\n   - All required fields are present and correctly formatted.\n\n6. Output:\n   - JSON Package: As shown above.\n   - Confirmation Message: `\"Meeting with Sarah scheduled for next week has been canceled.\"\n",
+              "role": "system"
+            },
+            {
+              "content": "=use current date and time to classify date and time. \ncurrent date and time : {{$now }}\n\n",
+              "role": "system"
+            },
+            {
+              "content": "={{ $json.content }}\n"
+            }
+          ]
+        },
+        "jsonOutput": true,
+        "options": {}
+      },
+      "id": "a9ba01e2-cd00-410d-b32f-ca5a74ee114d",
+      "name": "OpenAI4",
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.4,
+      "position": [
+        1520,
+        1140
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "zPo8ciHZnxl5C1Hr",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.1,
+      "position": [
+        1040,
+        940
+      ],
+      "id": "41ae6209-b30c-469c-943c-55d18631a335",
+      "name": "Execute Workflow"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1220,
+        940
+      ],
+      "id": "beb6e496-5ae0-47d7-a946-540d29e62b96",
+      "name": "Perplexity1"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1420,
+        940
+      ],
+      "id": "742073ab-6deb-4baa-84a0-dfc666ff12e8",
+      "name": "Edit Fields4"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Vector Store Tool": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Embeddings OpenAI": {
+      "ai_embedding": [
+        [
+          {
+            "node": "Pinecone Vector Store",
+            "type": "ai_embedding",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Vector Store Tool",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Telegram Trigger": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Telegram1": {
+      "main": [
+        [
+          {
+            "node": "OpenAI",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Telegram1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Calculator": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wikipedia": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When chat message received": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Window Buffer Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Image Generator": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Perplexity": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Calendar": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Pinecone Vector Store": {
+      "ai_vectorStore": [
+        [
+          {
+            "node": "Vector Store Tool",
+            "type": "ai_vectorStore",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Telegram",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Execute Workflow Trigger": {
+      "main": [
+        [
+          {
+            "node": "OpenAI4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Aggregate": {
+      "main": [
+        [
+          {
+            "node": "OpenAI1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Contacts Database": {
+      "ai_tool": [
+        [
+          {
+            "node": "OpenAI4",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create Event": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Delete Event1": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get IDs": {
+      "main": [
+        [
+          {
+            "node": "Aggregate",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get IDs2": {
+      "main": [
+        [
+          {
+            "node": "Aggregate1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Aggregate1": {
+      "main": [
+        [
+          {
+            "node": "OpenAI2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Calendar": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Calendar1": {
+      "main": [
+        [
+          {
+            "node": "Aggregate2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI2": {
+      "main": [
+        [
+          {
+            "node": "Google Calendar",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Aggregate2": {
+      "main": [
+        [
+          {
+            "node": "OpenAI3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI3": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "Create Event",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Get IDs",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Google Calendar1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Get IDs2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI1": {
+      "main": [
+        [
+          {
+            "node": "Delete Event1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Pinecone Vector Store1": {
+      "ai_vectorStore": [
+        [
+          {
+            "node": "Contacts Database",
+            "type": "ai_vectorStore",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Embeddings OpenAI1": {
+      "ai_embedding": [
+        [
+          {
+            "node": "Pinecone Vector Store1",
+            "type": "ai_embedding",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model2": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Contacts Database",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI4": {
+      "main": [
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields3": {
+      "main": [
+        []
+      ]
+    },
+    "Execute Workflow": {
+      "main": [
+        [
+          {
+            "node": "Perplexity1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Perplexity1": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "3fcfca48-5a63-4694-a153-759987c3e2d7",
+  "meta": {
+    "instanceId": "3f3e4604acf0ba320ed47caf7b8a8667ee8c719aa57990f8cfa900c45bc96ab8"
+  },
+  "id": "ahBdyx26SHsFsmCq",
+  "tags": []
+}
