@@ -1,51 +1,74 @@
-# GeneralAssistantBot - Test
 
-Questo progetto utilizza [n8n](https://n8n.io/) per creare un bot flessibile e personalizzabile, integrando varie API e strumenti di intelligenza artificiale. È progettato per rispondere a messaggi, generare contenuti e interagire con gli utenti su piattaforme come Telegram.
 
-## Caratteristiche
 
-- **Integrazione con OpenAI**: Supporto per modelli di linguaggio avanzati come GPT-4 per risposte intelligenti e contestualizzate.
-- **Memoria contestuale**: Utilizzo di una finestra di memoria per mantenere la coerenza nelle conversazioni.
-- **Generazione di immagini**: Creazione di immagini personalizzate su richiesta utilizzando strumenti AI.
-- **Supporto multi-tool**: Calcolatrice, ricerca su Wikipedia, query via SerpAPI e altro.
-- **Integrazione con Telegram**: Risposte automatiche, trascrizione di messaggi vocali e gestione degli eventi.
+# Telegram AI Personal Assistant
 
-## Struttura del Progetto
+A project powered by **n8n**, leveraging artificial intelligence to create a versatile personal assistant integrated with Telegram and various advanced APIs.
 
-- **Nodes principali**:
-  - **Telegram Trigger**: Rileva messaggi e comandi su Telegram.
-  - **OpenAI Chat Model**: Genera risposte basate su GPT.
-  - **Window Buffer Memory**: Mantiene il contesto della conversazione.
-  - **Vector Store Tool**: Gestisce il recupero di dati da archivi vettoriali.
-  - **Pinecone Vector Store**: Integrazione con Pinecone per memorizzare e recuperare embedding.
+## Features
 
-- **Tool aggiuntivi**:
-  - Calcolatrice per calcoli dinamici.
-  - Wikipedia per informazioni rapide.
-  - SerpAPI per ricerche web avanzate.
-  - Generazione di immagini e trascrizioni audio.
+- **Audio and Text Processing**: Uses OpenAI APIs to process and respond to both voice and text messages.
+- **Internet Search**: Integrates Perplexity API for quick and accurate online searches.
+- **Calendar Management**: Connects to Google Calendar for creating, editing, and deleting events effortlessly.
+- **Image Generation**: Utilizes DALL-E to create custom images for visual projects.
+- **Personal Data Access**: Integrates Pinecone as a vector database to manage contacts and personal information.
 
-## Requisiti
+## Project Architecture
 
-- [n8n](https://n8n.io/)
-- API key per:
-  - OpenAI
-  - Telegram
-  - Pinecone (opzionale)
-  - SerpAPI (opzionale)
+The workflow is built using **n8n**, an open-source platform for process automation. Each feature is implemented as an independent node:
 
-## Come Iniziare
+1. **Telegram Trigger**: The bot is triggered by messages sent via Telegram.
+2. **AI Processing**: OpenAI provides contextual responses for text and audio queries.
+3. **Internet Search**: Perplexity API enables online information retrieval.
+4. **Calendar Management**: Connects with Google Calendar for event management.
+5. **Image Generation**: Generates images on demand via DALL-E.
+6. **Vector Database**: Pinecone stores and retrieves contacts and personalized data.
 
-1. Clona questa repository:
+## How It Works
+
+1. The user sends a message (text or voice) to the bot on Telegram.
+2. The message is processed by the workflow in n8n, which identifies the required action (e.g., search, calendar management, or image generation).
+3. The bot interacts with APIs like OpenAI, Perplexity, Google Calendar, or Pinecone to deliver the requested output.
+4. Responses are sent back to the user on Telegram.
+
+## Workflow Visualization
+
+The following image shows the entire workflow in **n8n**, combining all the functionalities:
+
+![image](https://github.com/user-attachments/assets/e991270f-c7f8-45d2-a4fc-e4f306877af6)
+
+
+_Note: Errors visible in the workflow diagram are due to combining multiple functionalities for demonstration purposes. Each node is tested and works perfectly in practice._
+
+## Prerequisites
+
+- [n8n](https://n8n.io) installed locally or on a server.
+- A Telegram bot token from [BotFather](https://core.telegram.org/bots).
+- API keys for:
+  - [OpenAI](https://platform.openai.com)
+  - [Perplexity](https://www.perplexity.ai)
+  - [Google Calendar](https://console.cloud.google.com)
+  - [Pinecone](https://www.pinecone.io)
+- A configured Google Cloud project with Calendar API enabled.
+
+## Installation
+
+1. Clone this repository:
    ```bash
-   git clone https://github.com/mat1312/GeneralAssistantBot-Test.git
-   Installa n8n localmente o su un server.
-2. Importa il file .json nel tuo workspace n8n.
-3. Configura le credenziali richieste:
--OpenAI API key
--Telegram API key
-4. Avvia il workflow e testa il bot su Telegram.
+   git clone https://github.com/yourusername/PersonalAssistant.git
+   ```
+2. Import the `n8n` workflow file into your instance.
+3. Configure environment variables or credentials in n8n for Telegram, OpenAI, Perplexity, Google Calendar, and Pinecone.
+4. Start n8n and test the workflow.
 
-## Personalizzazioni
-Puoi adattare i nodi del workflow alle tue necessità.
-Integra altri strumenti o modifica le risposte generate per soddisfare il tuo caso d'uso.
+## Usage
+
+- Send a text or voice message to the bot on Telegram.
+- Use natural language queries for actions like:
+  - "Search the web for the latest news."
+  - "Create a meeting for tomorrow at 10 AM."
+  - "Generate an image of a futuristic city."
+- The bot will process the request and respond in real-time.
+
+
+
